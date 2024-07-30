@@ -39,14 +39,10 @@ module.exports = {
   ],
   publishers: [
     {
-      name: "@electron-forge/publisher-github",
+      name: "@electron-forge/publisher-s3",
       config: {
-        repository: {
-          owner: "shuleizhao",
-          name: "electron-update-test",
-        },
-        prerelease: false,
-        draft: false,
+        bucket: "shuleizhao-electron-update-test",
+        region: "us-east-2",
       },
     },
   ],

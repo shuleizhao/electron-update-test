@@ -36,12 +36,12 @@ app.on("ready", () => {
   createWindow();
 
   autoUpdater.forceDevUpdateConfig = true;
-  autoUpdater.setFeedURL({
-    url: `https://shuleizhao-electron-update-test.vercel.app/update/${
-      process.platform
-    }/v${app.getVersion()}`,
-    provider: "generic",
-  });
+  // autoUpdater.setFeedURL({
+  //   url: `https://shuleizhao-electron-update-test.vercel.app/update/${
+  //     process.platform
+  //   }/v${app.getVersion()}`,
+  //   provider: "generic",
+  // });
   autoUpdater.checkForUpdatesAndNotify();
 });
 

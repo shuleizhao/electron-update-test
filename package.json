@@ -42,7 +42,8 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4"
+    "webpack-cli": "^5.1.4",
+    "@electron-forge/publisher-s3": "^7.4.0"
   },
   "dependencies": {
     "electron-log": "^5.1.7",
