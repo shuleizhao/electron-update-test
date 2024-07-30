@@ -11,6 +11,17 @@ if (require("electron-squirrel-startup")) {
   app.quit();
 }
 
+if (process.env.NODE_ENV === "development") {
+  const path = require("path");
+  const updateConfigPath = path.join(
+    __dirname,
+    "..",
+    "..",
+    "dev-app-update.yml"
+  );
+  autoUpdater.updateConfigPath = updateConfigPath;
+}
+
 let mainWindow: BrowserWindow | null;
 
 function createWindow() {
@@ -42,6 +53,12 @@ app.on("ready", () => {
   //   }/v${app.getVersion()}`,
   //   provider: "generic",
   // });
+  autoUpdater.setFeedURL({
+    provider: "s3",
+    bucket: "shuleizhao-electron-update-test",
+    region: "us-east-2",
+    path: "electron-update-test/win32/x64/",
+  });
   autoUpdater.checkForUpdatesAndNotify();
 });
 

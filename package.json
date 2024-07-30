@@ -1,11 +1,12 @@
 {
   "name": "electron-update-test",
   "productName": "electron-update-test",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "This is created to test electron update.",
   "main": ".webpack/main",
   "scripts": {
     "start": "electron-forge start",
+    "start:local": "cross-env NODE_ENV=development electron-forge start",
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
@@ -14,7 +15,7 @@
   },
   "keywords": [],
   "author": {
-    "name": "Your Name",
+    "name": "Shulei Zhao",
     "email": "your.email@example.com"
   },
   "license": "MIT",
@@ -28,11 +29,13 @@
     "@electron-forge/plugin-fuses": "^7.4.0",
     "@electron-forge/plugin-webpack": "^7.4.0",
     "@electron-forge/publisher-github": "^7.4.0",
+    "@electron-forge/publisher-s3": "^7.4.0",
     "@electron/fuses": "^1.8.0",
     "@types/node": "^20.14.12",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
     "@vercel/webpack-asset-relocator-loader": "1.7.3",
+    "cross-env": "^7.0.3",
     "electron": "^31.3.0",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
@@ -42,8 +45,7 @@
     "ts-node": "^10.9.2",
     "typescript": "^5.5.4",
     "webpack": "^5.93.0",
-    "webpack-cli": "^5.1.4",
-    "@electron-forge/publisher-s3": "^7.4.0"
+    "webpack-cli": "^5.1.4"
   },
   "dependencies": {
     "electron-log": "^5.1.7",
