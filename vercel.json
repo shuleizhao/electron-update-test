@@ -1,0 +1,9 @@
+{
+  "version": 2,
+  "builds": [{ "src": "hazel/index.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "/hazel/index.js" }],
+  "env": {
+    "GITHUB_REPO": "shuleizhao/electron-update-test",
+    "GITHUB_USERNAME": "shuleizhao"
+  }
+}
