@@ -1,7 +1,9 @@
 import { app, BrowserWindow, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log/main";
+import path from "path";
 
+declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
 
 log.transports.file.level = "debug";
@@ -35,7 +37,20 @@ function createWindow() {
     },
   });
 
-  mainWindow.loadFile("src/index.html");
+  let indexPath;
+  if (app.isPackaged) {
+    indexPath = path.join(
+      __dirname,
+      "..",
+      "renderer",
+      "main_window",
+      "index.html"
+    );
+  } else {
+    indexPath = path.resolve(__dirname, "..", "..", "src", "index.html");
+  }
+  mainWindow.loadFile(indexPath);
+
   mainWindow.webContents.openDevTools();
 
   mainWindow.on("closed", () => {
@@ -53,11 +68,17 @@ app.on("ready", () => {
   //   }/v${app.getVersion()}`,
   //   provider: "generic",
   // });
+  // autoUpdater.setFeedURL({
+  //   provider: "s3",
+  //   bucket: "shuleizhao-electron-update-test",
+  //   region: "us-east-2",
+  //   path: "electron-update-test/win32/x64/",
+  // });
+
   autoUpdater.setFeedURL({
-    provider: "s3",
-    bucket: "shuleizhao-electron-update-test",
-    region: "us-east-2",
-    path: "electron-update-test/win32/x64/",
+    provider: "generic",
+    url: "https://shuleizhao-electron-update-test.s3.amazonaws.com/electron-update-test/win32/x64/",
+    channel: "latest",
   });
   autoUpdater.checkForUpdatesAndNotify();
 });

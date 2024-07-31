@@ -1,7 +1,7 @@
 {
   "name": "electron-update-test",
   "productName": "electron-update-test",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "This is created to test electron update.",
   "main": ".webpack/main",
   "scripts": {

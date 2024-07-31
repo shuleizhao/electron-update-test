@@ -22,7 +22,9 @@ module.exports = {
   makers: [
     {
       name: "@electron-forge/maker-squirrel",
-      config: {},
+      config: {
+        name: "electron-update-test",
+      },
     },
     {
       name: "@electron-forge/maker-zip",
