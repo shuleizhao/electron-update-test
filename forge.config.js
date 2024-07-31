@@ -1,5 +1,7 @@
 const { FusesPlugin } = require("@electron-forge/plugin-fuses");
 const { FuseV1Options, FuseVersion } = require("@electron/fuses");
+const path = require("path");
+const fs = require("fs");
 
 const generateLatestYml = require("./scripts/generate-latest-yml");
 
@@ -17,6 +19,17 @@ module.exports = {
         });
       }
       return makeResults;
+    },
+    postPackage: async (forgeConfig, options) => {
+      const appUpdateYmlPath = path.join(__dirname, "app-update.yml");
+      const outputDir = path.join(options.outputPaths[0], "resources");
+      const targetPath = path.join(outputDir, "app-update.yml");
+
+      if (fs.existsSync(outputDir)) {
+        fs.copyFileSync(appUpdateYmlPath, targetPath);
+      }
+
+      return options;
     },
   },
   makers: [

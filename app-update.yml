@@ -1,0 +1,5 @@
+provider: s3
+bucket: shuleizhao-electron-update-test
+region: us-east-2
+path: electron-update-test/win32/x64/
+updaterCacheDirName: shuleizhao-electron-update-test-updater
