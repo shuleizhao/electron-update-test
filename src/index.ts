@@ -83,12 +83,16 @@ app.on("ready", () => {
   autoUpdater.checkForUpdatesAndNotify();
 });
 
-autoUpdater.on("update-available", () => {
-  mainWindow?.webContents.send("update_available");
+autoUpdater.on("update-available", (info) => {
+  mainWindow?.webContents.send("update-available", info.version);
 });
 
-autoUpdater.on("update-downloaded", () => {
-  mainWindow?.webContents.send("update_downloaded");
+autoUpdater.on("update-not-available", () => {
+  mainWindow?.webContents.send("update-not-available");
+});
+
+autoUpdater.on("update-downloaded", (info) => {
+  mainWindow?.webContents.send("update-downloaded", info.version);
 });
 
 autoUpdater.on("error", (err) => {
@@ -101,6 +105,8 @@ autoUpdater.on("error", (err) => {
     log.error("Stack trace:");
     log.error(err.stack);
   }
+
+  mainWindow?.webContents.send("error", err);
 });
 
 ipcMain.on("app_version", (event) => {

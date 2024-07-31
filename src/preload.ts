@@ -18,10 +18,21 @@ process.once("loaded", () => {
       message.textContent = `A new update ${version} is available. Downloading now...`;
     });
 
+    ipcRenderer.on("update-not-available", () => {
+      notificationElement.classList.remove("hidden");
+      message.textContent = `You are on the latest version.`;
+    });
+
     ipcRenderer.on("update-downloaded", (_event, version) => {
       notificationElement.classList.remove("hidden");
       message.textContent = `Update ${version} Downloaded. It will be installed on restart. Restart now?`;
       restartButton.classList.remove("hidden");
+    });
+
+    ipcRenderer.on("error", (_event, err) => {
+      notificationElement.classList.remove("hidden");
+      message.textContent = `An error has occurred.`;
+      console.log("Error: -------->", err);
     });
 
     restartButton.addEventListener("click", () => {

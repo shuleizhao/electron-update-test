@@ -53,7 +53,10 @@
     "electron-updater": "^6.2.1"
   },
   "build": {
-    "appId": "com.example.app"
+    "appId": "electron.update.test",
+    "win": {
+      "target": "nsis"
+    }
   },
   "config": {
     "forge": "./forge.config.js"
