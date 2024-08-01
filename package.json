@@ -48,6 +48,7 @@
     "webpack-cli": "^5.1.4"
   },
   "dependencies": {
+    "dotenv": "^16.4.5",
     "electron-log": "^5.1.7",
     "electron-squirrel-startup": "^1.0.1",
     "electron-updater": "^6.2.1"

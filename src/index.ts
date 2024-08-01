@@ -2,9 +2,15 @@ import { app, BrowserWindow, ipcMain } from "electron";
 import { autoUpdater } from "electron-updater";
 import log from "electron-log/main";
 import path from "path";
+import * as dotenv from "dotenv";
 
 declare const MAIN_WINDOW_WEBPACK_ENTRY: string;
 declare const MAIN_WINDOW_PRELOAD_WEBPACK_ENTRY: string;
+
+dotenv.config();
+
+let mainWindow: BrowserWindow | null;
+let updateTimeout: NodeJS.Timeout | null = null;
 
 log.transports.file.level = "debug";
 autoUpdater.logger = log;
@@ -24,8 +30,6 @@ if (process.env.NODE_ENV === "development") {
   autoUpdater.updateConfigPath = updateConfigPath;
 }
 
-let mainWindow: BrowserWindow | null;
-
 function createWindow() {
   mainWindow = new BrowserWindow({
     height: 600,
@@ -37,6 +41,7 @@ function createWindow() {
     },
   });
 
+  // Need this to avoid that the packaged app cannot find the index html.
   let indexPath;
   if (app.isPackaged) {
     indexPath = path.join(
@@ -68,6 +73,7 @@ app.on("ready", () => {
   //   }/v${app.getVersion()}`,
   //   provider: "generic",
   // });
+
   // autoUpdater.setFeedURL({
   //   provider: "s3",
   //   bucket: "shuleizhao-electron-update-test",
@@ -75,12 +81,29 @@ app.on("ready", () => {
   //   path: "electron-update-test/win32/x64/",
   // });
 
-  autoUpdater.setFeedURL({
-    provider: "generic",
-    url: "https://shuleizhao-electron-update-test.s3.amazonaws.com/electron-update-test/win32/x64/",
-    channel: "latest",
-  });
-  autoUpdater.checkForUpdatesAndNotify();
+  const bucketName =
+    process.env.AWS_S3_BUCKET || "shuleizhao-electron-update-test";
+  const s3Path = process.env.AWS_S3_PATH || "electron-update-test/win32/x64/";
+  const signedURL = process.env.AWS_S3_SIGNED_URL || "";
+
+  if (signedURL) {
+    autoUpdater.setFeedURL({
+      provider: "generic",
+      url: signedURL,
+    });
+    autoUpdater.checkForUpdatesAndNotify();
+  } else if (bucketName && s3Path) {
+    autoUpdater.setFeedURL({
+      provider: "generic",
+      url: `https://${bucketName}.s3.amazonaws.com/${s3Path}`,
+      channel: "latest",
+    });
+    autoUpdater.checkForUpdatesAndNotify();
+  }
+});
+
+autoUpdater.on("error", (err) => {
+  mainWindow?.webContents.send("error", err);
 });
 
 autoUpdater.on("update-available", (info) => {
@@ -93,20 +116,16 @@ autoUpdater.on("update-not-available", () => {
 
 autoUpdater.on("update-downloaded", (info) => {
   mainWindow?.webContents.send("update-downloaded", info.version);
+  updateTimeout = setTimeout(() => {
+    autoUpdater.quitAndInstall(false, true);
+  }, 5000);
 });
 
-autoUpdater.on("error", (err) => {
-  log.error("Error in auto-updater.", err);
-  log.error("Error properties:");
-  for (const prop in err) {
-    log.error(`  ${prop}: ${(err as any)[prop]}`);
+ipcMain.on("cancel_update", () => {
+  if (updateTimeout) {
+    clearTimeout(updateTimeout);
+    updateTimeout = null;
   }
-  if (err.stack) {
-    log.error("Stack trace:");
-    log.error(err.stack);
-  }
-
-  mainWindow?.webContents.send("error", err);
 });
 
 ipcMain.on("app_version", (event) => {
